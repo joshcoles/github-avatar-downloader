@@ -20,14 +20,18 @@ function github_url (url) {
 //build api path with user/token and repoOwner/repoName inputs
 //make api request and log response(body) using callback
 function getRepoContributors(repoOwner, repoName, cb) {
+  if (!repoName || !repoOwner) {
+    console.log("Whoops, please provide a valid Github Username and Repository.");
+    return;
+  }
   var requestURL = 'https://'+ GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
 
   request(github_url(requestURL), function(err, response, body) {
     if (err) {
      return cb(err);
-    } if (response.statusCode !== 200) {
-      return cb(new Error(response.body.toString()));
     }
+    console.log("Response status code: " + response.statusCode);
+    console.log("Response status message: " + response.statusMessage);
     cb(null, body);
   });
 }
