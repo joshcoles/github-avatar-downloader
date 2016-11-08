@@ -19,6 +19,8 @@ function github_url (url) {
 
 function getRepoContributors(repoOwner, repoName, cb) {
   var requestURL = 'https://'+ GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
+
+
   console.log(requestURL);
 
 
@@ -40,7 +42,9 @@ getRepoContributors("jensen", "gitfun", function(err, result) {
     console.error(err);
     process.exit(1);                                                        //vasili???
   }
-  console.log("Result:", result);
+  result.forEach(function(user) {
+    console.log(user.avatar_url);
+  })
 });
 
 
