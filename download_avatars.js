@@ -3,10 +3,10 @@ var fs = require('fs');
 
 var GITHUB_USER = "joshcoles";
 var GITHUB_TOKEN = "5a1b2ef5aa7146b3f8a13beec33b03ad88dc9eeb";
-var repoOwnerFromCommandLine = process.argv[2]
-var repoNameFromCommandLine = process.argv[3]
+var repoOwnerFromCommandLine = process.argv[2];
+var repoNameFromCommandLine = process.argv[3];
 
-console.log("Welcome to Github Avatar Downloader! Your avatars will download shortly!")
+console.log("Welcome to Github Avatar Downloader! Your avatars will download shortly!");
 
 //assign user agent header property to bypass 403 error
 function github_url (url) {
@@ -54,13 +54,13 @@ function downloadImageByURL(url, filePath) {
   request.get(url)
   .on('error', function (err) {
     if (err) {
-      console.log("There's an error!: " + err)
+      console.log("There's an error!: " + err);
     }
   })
   .on('response', function (response) {
   })
   .on('end', function() {
-    console.log("Avatar downloaded!")
+    console.log("Avatar downloaded!");
   })
   .pipe(fs.createWriteStream(`./avatars/${filePath}.jpeg`));
 }
