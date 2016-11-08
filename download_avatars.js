@@ -1,10 +1,12 @@
 var request = require('request');
 var fs = require('fs');
 
-
 var GITHUB_USER = "joshcoles";
 var GITHUB_TOKEN = "5a1b2ef5aa7146b3f8a13beec33b03ad88dc9eeb";
+var repoOwnerFromCommandLine = process.argv[2]
+var repoNameFromCommandLine = process.argv[3]
 
+console.log("Welcome to Github Avatar Downloader! Your avatars will download shortly!")
 
 //assign user agent header property to bypass 403 error
 function github_url (url) {
@@ -15,36 +17,27 @@ function github_url (url) {
   };
 };
 
-
 //build api path with user/token and repoOwner/repoName inputs
 //make api request and log response(body) using callback
 function getRepoContributors(repoOwner, repoName, cb) {
   var requestURL = 'https://'+ GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
 
-
-  console.log(requestURL);
-
-
   request(github_url(requestURL), function(err, response, body) {
     if (err) {
      return cb(err);
     } if (response.statusCode !== 200) {
-      return cb(new Error(response.body.toString()));                       //vasili???
+      return cb(new Error(response.body.toString()));
     }
-    console.log('Response Status Code: ' + response.statusCode);
-    console.log('Content Type: ' + response.headers['content-type']);
-    console.log('Response Status Message: ' + response.statusMessage);
     cb(null, body);
   });
 }
 
-
 //assign examples to repoOwner and repoName
 //call downloadImageByURL on each user using their avatar_url and login
-getRepoContributors("jensen", "gitfun", function(err, result) {
+getRepoContributors(repoOwnerFromCommandLine, repoNameFromCommandLine, function(err, result) {
   if(err) {
     console.error(err);
-    process.exit(1);                                                        //vasili???
+    process.exit(1);
   }
   result.forEach(function(user) {
     downloadImageByURL(user.avatar_url, user.login);
@@ -61,10 +54,9 @@ function downloadImageByURL(url, filePath) {
     }
   })
   .on('response', function (response) {
-    console.log("Response status code is: " + response.statusCode);
-    console.log("Response message is: " + response.statusMessage);
-    console.log("Content Type is: " + response.headers['content-type']);
-    console.log("Content downloading...")
+  })
+  .on('end', function() {
+    console.log("Avatar downloaded!")
   })
   .pipe(fs.createWriteStream(`./avatars/${filePath}.jpeg`));
 }
